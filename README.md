@@ -4,10 +4,10 @@
 
 ## Структура
 
-- `vph04-vps-deployment/backend` — API и работа с PostgreSQL.
-- `vph04-vps-deployment/frontend` — публичный сайт и административный интерфейс.
-- `vph04-vps-deployment/nginx` — конфигурация веб-сервера.
-- `vph04-vps-deployment/compose*.yaml` — конфигурации сервисов и вариантов запуска.
+- `vph06-photographer-crm/backend` — API и работа с PostgreSQL.
+- `vph06-photographer-crm/frontend` — публичный сайт и административный интерфейс.
+- `vph06-photographer-crm/nginx` — конфигурация веб-сервера.
+- `vph06-photographer-crm/compose*.yaml` — конфигурации сервисов и вариантов запуска.
 - `VPh06-HOMEWORK.md` — отчёт по критериям задания со скриншотами.
 
 ## Безопасность

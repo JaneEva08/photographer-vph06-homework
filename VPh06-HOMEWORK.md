@@ -12,22 +12,22 @@
 - Удаление услуги реализовано как деактивация для сохранения истории. `DELETE` возвращает HTTP 204; неактивная услуга отсутствует в публичном каталоге и остаётся в административной истории.
 - CRUD через API подтверждён статусами: `GET` — HTTP 200, `POST` — HTTP 201, `PATCH` — HTTP 200, `DELETE` — HTTP 204.
 
-![Таблица услуг в админ-панели](vph04-vps-deployment/docs/vph06-admin-services.png)
+![Таблица услуг в админ-панели](vph06-photographer-crm/docs/vph06-admin-services.png)
 
 ## 3. Сбор и анализ метрик
 
 - В статистике доступны периоды «Сегодня», «Эта неделя», «Этот месяц» и тепловая карта. Для текущего дня панель показывает 1 визит, среднее время 6:28, 17 взаимодействий и 2 округлённые точки курсора.
 - В PostgreSQL в таблице `behavior_metrics` записано 43 тестовых события: `cursor` — 6, `form_start` — 2, `heartbeat` — 30, `page_end` — 1, `page_view` — 2, `service_view` — 2. Содержимое полей формы не сохраняется; координаты курсора округляются до сетки 20×12.
 
-![Статистика пользователей и тепловая карта](vph04-vps-deployment/docs/vph06-admin-statistics.png)
+![Статистика пользователей и тепловая карта](vph06-photographer-crm/docs/vph06-admin-statistics.png)
 
-![События в таблице behavior_metrics](vph04-vps-deployment/docs/vph06-behavior-metrics-db.png)
+![События в таблице behavior_metrics](vph06-photographer-crm/docs/vph06-behavior-metrics-db.png)
 
 ## 4. Тестирование системы приоритизации
 
 - Созданы 10 синтетических заявок: 4 срочных, 3 средних и 3 низких.
 - В списке админ-панели отображаются 4 `hot`, 3 `warm` и 3 `cold` заявки, отсортированные по приоритету. В карточках доступны детали и факторы присвоения приоритета.
-![Тестовые заявки с приоритетами](vph04-vps-deployment/docs/vph06-admin-leads.png)
+![Тестовые заявки с приоритетами](vph06-photographer-crm/docs/vph06-admin-leads.png)
 
 ## 5. Безопасность и развёртывание
 
@@ -36,7 +36,7 @@
 - Внешние TCP-подключения к портам 80, 8000, 5432, 5050 и 5000 недоступны. pgAdmin и Docker Registry выключены.
 - При закрытом TCP-порте HTTP-ответ 403 не формируется: внешнее подключение отклоняется на сетевом уровне.
 
-![Контейнеры проекта](vph04-vps-deployment/docs/vph06-containers-healthy.png)
+![Контейнеры проекта](vph06-photographer-crm/docs/vph06-containers-healthy.png)
 
 
 ## 6. Логи и отладка

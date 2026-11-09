@@ -12,7 +12,7 @@ class Base(DeclarativeBase):
 def _database_url() -> str:
     database_host = os.getenv("DATABASE_HOST")
     if not database_host:
-        return os.getenv("DATABASE_URL", "sqlite:///./photo_vph05.db")
+        return os.getenv("DATABASE_URL", "sqlite:///./photo_vph06.db")
 
     password_file = Path(os.environ["DATABASE_PASSWORD_FILE"])
     password = password_file.read_text(encoding="utf-8").strip()

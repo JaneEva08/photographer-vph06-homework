@@ -1,10 +1,10 @@
 services:
-  # VPh04 Nginx serves the site; VPh05 builds the static app into this image.
+  # VPh06 Nginx serves the site; VPh06 builds the static app into this image.
   nginx:
     build:
       context: ./frontend
       dockerfile: Dockerfile
-    image: photographer-vph05-frontend:local
+    image: photographer-vph06-frontend:local
     restart: unless-stopped
     ports:
       - "${NGINX_BIND:-0.0.0.0}:${NGINX_HTTP_PORT:-80}:80"
@@ -21,7 +21,7 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    image: photographer-vph05-backend:local
+    image: photographer-vph06-backend:local
     restart: unless-stopped
     environment:
       DATABASE_HOST: postgres
