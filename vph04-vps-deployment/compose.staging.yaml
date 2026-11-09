@@ -1,0 +1,10 @@
+services:
+  # Isolated staging uses its own Compose project, DB volume and loopback ports.
+  pgadmin:
+    profiles: ["tools"]
+
+  registry:
+    profiles: ["tools"]
+
+  watchtower:
+    profiles: ["maintenance"]

@@ -1,0 +1,9 @@
+services:
+  pgadmin:
+    networks:
+      - data
+      - admin_access
+
+networks:
+  admin_access:
+    driver: bridge

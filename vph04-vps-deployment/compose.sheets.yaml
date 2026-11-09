@@ -1,0 +1,12 @@
+services:
+  backend:
+    environment:
+      GOOGLE_SHEETS_SPREADSHEET_ID: ${GOOGLE_SHEETS_SPREADSHEET_ID:?Set the private spreadsheet ID in .env}
+      GOOGLE_SERVICE_ACCOUNT_FILE: /run/secrets/google_service_account.json
+    secrets:
+      - source: google_service_account
+        target: google_service_account.json
+
+secrets:
+  google_service_account:
+    file: ./secrets/google_service_account.json

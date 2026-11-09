@@ -1,0 +1,137 @@
+services:
+  # VPh04 Nginx serves the site; VPh05 builds the static app into this image.
+  nginx:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    image: photographer-vph05-frontend:local
+    restart: unless-stopped
+    ports:
+      - "${NGINX_BIND:-0.0.0.0}:${NGINX_HTTP_PORT:-80}:80"
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/templates/default.conf.template:ro
+      - certbot_www:/var/www/certbot:ro
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - edge
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    image: photographer-vph05-backend:local
+    restart: unless-stopped
+    environment:
+      DATABASE_HOST: postgres
+      DATABASE_PORT: "5432"
+      DATABASE_NAME: ${POSTGRES_DB:?Set POSTGRES_DB in .env}
+      DATABASE_USER: ${POSTGRES_USER:?Set POSTGRES_USER in .env}
+      DATABASE_PASSWORD_FILE: /run/secrets/postgres_password
+      JWT_SECRET_FILE: /run/secrets/jwt_secret
+      ADMIN_BOOTSTRAP_TOKEN_FILE: /run/secrets/admin_bootstrap_token
+      COOKIE_SECURE: ${COOKIE_SECURE:-false}
+    ports:
+      - "127.0.0.1:${BACKEND_PORT:-8000}:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=3)"]
+      interval: 20s
+      timeout: 5s
+      retries: 5
+    networks:
+      - edge
+      - data
+    secrets:
+      - postgres_password
+      - jwt_secret
+      - admin_bootstrap_token
+
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:?Set POSTGRES_DB in .env}
+      POSTGRES_USER: ${POSTGRES_USER:?Set POSTGRES_USER in .env}
+      POSTGRES_PASSWORD_FILE: /run/secrets/postgres_password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - data
+    secrets:
+      - postgres_password
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:?Set PGADMIN_DEFAULT_EMAIL in .env}
+      PGADMIN_DEFAULT_PASSWORD_FILE: /run/secrets/pgadmin_password
+    ports:
+      - "127.0.0.1:${PGADMIN_PORT:-5050}:80"
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - data
+    labels:
+      com.centurylinklabs.watchtower.enable: "true"
+    secrets:
+      - pgadmin_password
+
+  registry:
+    image: registry:3
+    restart: unless-stopped
+    environment:
+      REGISTRY_AUTH: htpasswd
+      REGISTRY_AUTH_HTPASSWD_REALM: Photographer Registry
+      REGISTRY_AUTH_HTPASSWD_PATH: /auth/htpasswd
+      REGISTRY_HTTP_TLS_CERTIFICATE: /certs/fullchain.pem
+      REGISTRY_HTTP_TLS_KEY: /certs/privkey.pem
+    ports:
+      - "${REGISTRY_BIND:-127.0.0.1}:${REGISTRY_PORT:-5000}:5000"
+    volumes:
+      - registry_data:/var/lib/registry
+      - ./registry/auth/htpasswd:/auth/htpasswd:ro
+      - ./registry/certs:/certs:ro
+    networks:
+      - registry
+
+  watchtower:
+    image: nickfedor/watchtower:1.23.2
+    restart: unless-stopped
+    command: ["--cleanup", "--interval", "86400", "--label-enable"]
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
+volumes:
+  postgres_data:
+  pgadmin_data:
+  registry_data:
+  certbot_www:
+
+secrets:
+  postgres_password:
+    file: ./secrets/postgres_password.txt
+  pgadmin_password:
+    file: ./secrets/pgadmin_password.txt
+  jwt_secret:
+    file: ./secrets/jwt_secret.txt
+  admin_bootstrap_token:
+    file: ./secrets/admin_bootstrap_token.txt
+
+networks:
+  edge:
+  data:
+    internal: true
+  registry:

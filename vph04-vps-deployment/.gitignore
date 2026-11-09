@@ -1,0 +1,17 @@
+.env
+public-vph05/
+secrets/*
+!secrets/.gitkeep
+registry/auth/*
+!registry/auth/.gitkeep
+registry/certs/*
+!registry/certs/.gitkeep
+*.pem
+*.key
+node_modules/
+frontend/dist/
+backend/.venv/
+backend/__pycache__/
+backend/**/*.pyc
+*.db
+.pytest_cache/

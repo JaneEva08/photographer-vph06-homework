@@ -1,0 +1,27 @@
+services:
+  nginx:
+    environment:
+      DOMAIN: ${DOMAIN:?Set DOMAIN in .env}
+    ports:
+      - "443:443"
+    volumes:
+      - ./nginx/production.conf:/etc/nginx/templates/default.conf.template:ro
+      - ./secrets/letsencrypt:/etc/letsencrypt:ro
+      - certbot_www:/var/www/certbot:ro
+
+  backend:
+    environment:
+      COOKIE_SECURE: "true"
+
+  pgadmin:
+    profiles: ["tools"]
+
+  registry:
+    profiles: ["tools"]
+
+  certbot:
+    image: certbot/certbot:latest
+    profiles: ["certbot"]
+    volumes:
+      - ./secrets/letsencrypt:/etc/letsencrypt
+      - certbot_www:/var/www/certbot

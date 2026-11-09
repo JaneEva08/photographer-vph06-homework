@@ -1,0 +1,15 @@
+.env
+.env.*
+!.env.example
+**/secrets/**
+!**/secrets/.gitkeep
+*.pem
+*.key
+*.db
+*.log
+__pycache__/
+*.py[cod]
+node_modules/
+frontend/dist/
+.venv/
+.pytest_cache/

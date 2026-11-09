@@ -1,0 +1,17 @@
+{
+  "name": "photographer-vph05-frontend",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 0.0.0.0",
+    "build": "vite build"
+  },
+  "dependencies": {
+    "@fontsource-variable/nunito-sans": "^5.2.10",
+    "@fontsource-variable/outfit": "^5.2.10"
+  },
+  "devDependencies": {
+    "vite": "^8.3.5"
+  }
+}
